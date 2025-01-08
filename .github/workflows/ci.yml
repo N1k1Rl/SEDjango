@@ -4,11 +4,12 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   docs:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Check out code
@@ -24,13 +25,16 @@ jobs:
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
+
       - name: Clean up __pycache__ and ignored files
         run: |
           find . -name "__pycache__" -type d -exec rm -r {} +
           find . -name "*.pyc" -type f -delete
-          git clean -fdX  # Ensures ignored files are removed
-          
-          
+          git clean -fdX
+
+      - name: Debug git status
+        run: git status
+
       - name: Generate API documentation
         run: |
           source venv/bin/activate
@@ -38,11 +42,10 @@ jobs:
 
       - name: Commit and push documentation
         run: |
-          git config --global user.mail
-            "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git add docs.json index.html
-          git commit -m "Updated documentation"
+          git add docs.json
+          git commit -m "Updated documentation" || echo "No changes to commit"
           git push origin main
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
