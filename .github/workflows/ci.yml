@@ -23,8 +23,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv venv
-          if [ ! -d "venv" ]; then
-            echo "Error: Virtual environment not created."
+          if [ ! -f "venv/bin/python" ]; then
+            echo "Error: Virtual environment not created or python executable missing."
             exit 1
           fi
           ./venv/bin/python -m pip install --upgrade pip
