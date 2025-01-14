@@ -15,7 +15,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up environment
+      - name: Set up Python environment
         uses: actions/setup-python@v2
         with:
           python-version: 3.12
@@ -23,22 +23,28 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
+          if [ ! -d "venv" ]; then
+            echo "Error: Virtual environment not created."
+            exit 1
+          fi
+          ./venv/bin/python -m pip install --upgrade pip
+          ./venv/bin/pip install -r requirements.txt
 
-      - name: Clean up __pycache__ and ignored files
+      - name: Debug virtual environment
         run: |
-          find . -name "__pycache__" -type d -exec rm -r {} +
-          find . -name "*.pyc" -type f -delete
-          git clean -fdX
-
-      - name: Debug git status
-        run: git status
+          echo "Python version in virtual environment:"
+          ./venv/bin/python --version
+          echo "Installed packages:"
+          ./venv/bin/pip list
 
       - name: Generate API documentation
         run: |
-          source venv/bin/activate
-          python SEList4/manage.py generateschema > docs.json
+          ./venv/bin/python SEList4/manage.py generateschema > docs.json
+
+      - name: Clean up unnecessary files
+        run: |
+          find . -name "__pycache__" -type d -exec rm -r {} +
+          find . -name "*.pyc" -type f -delete
 
       - name: Commit and push documentation
         run: |
