@@ -8,9 +8,15 @@ permissions:
   contents: write
 
 jobs:
-  docs:
+  test:
     runs-on: ubuntu-latest
-
+    services:
+      db:
+        image: postgres:17
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: testdb
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -30,12 +36,34 @@ jobs:
           ./venv/bin/python -m pip install --upgrade pip
           ./venv/bin/pip install -r requirements.txt
 
-      - name: Debug virtual environment
+      - name: Build and start Containers
+        run: docker-compose up --build -d
+
+      - name: Execute unit tests
+        run: docker exec $(docker-compose ps -q api) python SEList4/manage.py test SEList4/myapp/tests
+
+
+  docs:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
         run: |
-          echo "Python version in virtual environment:"
-          ./venv/bin/python --version
-          echo "Installed packages:"
-          ./venv/bin/pip list
+          python -m venv venv
+          if [ ! -f "venv/bin/python" ]; then
+            echo "Error: Virtual environment not created or python executable missing."
+            exit 1
+          fi
+          ./venv/bin/python -m pip install --upgrade pip
+          ./venv/bin/pip install -r requirements.txt
 
       - name: Generate API documentation
         run: |
