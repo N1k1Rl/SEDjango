@@ -1,4 +1,5 @@
 name: software-engineering-lab-9
+
 on:
   push:
     branches:
@@ -12,62 +13,62 @@ jobs:
     runs-on: ubuntu-latest
     services:
       db:
-        image: postgres:17
+        image: postgres:15
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpassword
           POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.12
 
       - name: Install dependencies
         run: |
           python -m venv venv
-          if [ ! -f "venv/bin/python" ]; then
-            echo "Error: Virtual environment not created or python executable missing."
-            exit 1
-          fi
-          ./venv/bin/python -m pip install --upgrade pip
-          ./venv/bin/pip install -r requirements.txt
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Build and start Containers
-        run: docker compose up --build -d
+      - name: Start Docker Compose
+        run: |
+          docker compose up -d --build
+        env:
+          DATABASE_URL: postgres://testuser:testpassword@localhost:5432/testdb
 
-      - name: Execute unit tests
-        run: docker exec $(docker compose ps -q api) python SEList4/manage.py test SEList4/myapp/tests
-
+      - name: Run Django unit tests
+        run: |
+          docker compose exec api python SEList4/manage.py test SEList4/myapp/tests || exit 1
 
   docs:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.12
 
       - name: Install dependencies
         run: |
           python -m venv venv
-          if [ ! -f "venv/bin/python" ]; then
-            echo "Error: Virtual environment not created or python executable missing."
-            exit 1
-          fi
-          ./venv/bin/python -m pip install --upgrade pip
-          ./venv/bin/pip install -r requirements.txt
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Generate API documentation
         run: |
-          ./venv/bin/python SEList4/manage.py generateschema > docs.json
+          source venv/bin/activate
+          python SEList4/manage.py generateschema > docs.json
 
       - name: Clean up unnecessary files
         run: |
