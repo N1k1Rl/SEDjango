@@ -37,10 +37,10 @@ jobs:
           ./venv/bin/pip install -r requirements.txt
 
       - name: Build and start Containers
-        run: docker-compose up --build -d
+        run: docker compose up --build -d
 
       - name: Execute unit tests
-        run: docker exec $(docker-compose ps -q api) python SEList4/manage.py test SEList4/myapp/tests
+        run: docker exec $(docker compose ps -q api) python SEList4/manage.py test SEList4/myapp/tests
 
 
   docs:
