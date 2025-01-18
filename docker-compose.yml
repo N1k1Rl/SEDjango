@@ -12,7 +12,7 @@ services:
       DATABASE_PORT: ${DATABASE_PORT}
       DATABASE_HOST: 'db'
     env_file:
-      - .env
+      - SEList4/.env
     depends_on:
       - db
   db:
@@ -23,7 +23,3 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - "5432:5432"
-
-
-
-
