@@ -5,20 +5,25 @@ services:
       dockerfile: "Dockerfile.txt"
     ports:
       - "9999:9999"
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_HOST: 'db'
     env_file:
       - .env
-    environment:
-      DATABASE_HOST: 'db'
     depends_on:
       - db
-
   db:
     image: postgres:17
-    env_file:
-      - .env
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}  
+      POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - "5432:5432"
+
+
+
+
