@@ -12,7 +12,7 @@ services:
       DATABASE_PORT: ${DATABASE_PORT}
       DATABASE_HOST: 'db'
     env_file:
-      - /.env
+      - .env
     depends_on:
       - db
   db:
