@@ -17,7 +17,7 @@
       <sourceFolder url="file://$MODULE_DIR$/SEList4" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/myenv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.12 virtualenv at ~/django_project/myenv" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.12 (django_project)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
