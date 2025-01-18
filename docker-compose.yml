@@ -10,7 +10,7 @@ services:
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_PORT: ${DATABASE_PORT}
-      DATABASE_HOST: 'db-1'
+      DATABASE_HOST: 'docker-db-1'
     env_file:
       - .env
     depends_on:
