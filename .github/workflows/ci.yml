@@ -40,7 +40,7 @@ jobs:
         run: docker compose up --build -d
 
       - name: Execute unit tests
-        run: docker exec $(docker compose ps -q api) python SEList4/manage.py test SEList4/myapp/tests
+        run: docker exec $(docker compose ps -q api) python SEDjango/SEList4/manage.py test /SEDjango/SEList4/myapp/tests
 
 
   docs:
