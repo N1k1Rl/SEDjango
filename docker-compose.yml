@@ -14,8 +14,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - "db"
-    command: [ "/wait-for-it.sh", "db:5432", "--", "python", "/SEDjango/SEList4/manage.py", "runserver", "0.0.0.0:9999" ]
+      db:
+        condition: service_healthy
 
   db:
     image: postgres
@@ -25,3 +25,8 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
