@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
-    #name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     price = models.DecimalField(
         max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)]
     )
