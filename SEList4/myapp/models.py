@@ -12,8 +12,10 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
 
     def clean(self):
+        if self.price is None:
+            raise ValidationError({'price': "Price cannot be None."})
         if self.price <= 0:
-            raise ValidationError("Price must be a positive value.")
+            raise ValidationError({'price': "Price must be greater than 0."})
 
     def __str__(self):
         return self.name
