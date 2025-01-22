@@ -15,9 +15,10 @@ services:
       - .env
     depends_on:
       - "db"
-    command: [ "./wait-for-it.sh", "db:5432", "--", "python", "app.py" ]
+    command: [ "/wait-for-it.sh", "db:5432", "--", "python", "/SEDjango/SEList4/manage.py", "runserver", "0.0.0.0:9999" ]
+
   db:
-    image: postgres:17
+    image: postgres
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
